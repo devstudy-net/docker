@@ -16,8 +16,13 @@ ARG JAVA_MODULES=jdk.jsobject,jdk.internal.opt,jdk.aot,jdk.scripting.nashorn.she
 
 RUN mkdir /opt/install && \
     cd /opt/install && \
+	# Display download link
+	echo ${JDK_DOWNLOAD_LINK} && \
     wget ${JDK_DOWNLOAD_LINK} && \
+	# Display tar file size
+	wc ${ZULU_JDK_VERSION}.tar.gz && \
     tar -xzf ${ZULU_JDK_VERSION}.tar.gz && \
+	# Build custom JRE
     ${ZULU_JDK_VERSION}/bin/jlink -v --add-modules ${JAVA_MODULES} --output /opt/jre11 --no-header-files --no-man-pages --compress 2 && \
     rm -rf /opt/install
 

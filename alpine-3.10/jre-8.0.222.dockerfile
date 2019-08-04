@@ -15,10 +15,15 @@ ARG JRE_DOWNLOAD_LINK=https://cdn.azul.com/zulu/bin/${ZULU_JRE_VERSION}.tar.gz
 
 RUN mkdir /opt/install && \
     cd /opt/install && \
+	# Display download link
+	echo ${JRE_DOWNLOAD_LINK} && \
     wget ${JRE_DOWNLOAD_LINK} && \
+	# Display tar file size
+	wc ${ZULU_JRE_VERSION}.tar.gz && \
     tar -xzf ${ZULU_JRE_VERSION}.tar.gz && \
     mv ${ZULU_JRE_VERSION} /opt/jre8 && \
     rm -rf /opt/install && \
+	# Remove redundant folder and files
     rm -rf /opt/jre8/man && \
     rm -f /opt/jre8/readme.txt && \
     rm -f /opt/jre8/Welcome.html

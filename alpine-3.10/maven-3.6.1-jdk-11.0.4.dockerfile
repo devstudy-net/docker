@@ -16,14 +16,19 @@ MAINTAINER devstudy.net
 
 ARG MAVEN_VERSION
 ARG MAVEN_FOLDER=apache-maven-${MAVEN_VERSION}
-ARG MAVEN_DOWNLOAD_LINK=http://apache.volia.net/maven/maven-3/${MAVEN_VERSION}/binaries/${MAVEN_FOLDER}-bin.tar.gz
+ARG MAVEN_DOWNLOAD_LINK=http://apache.cp.if.ua/maven/maven-3/${MAVEN_VERSION}/binaries/${MAVEN_FOLDER}-bin.tar.gz
 
 RUN mkdir /opt/install && \
     cd /opt/install && \
+	# Display download link
+	echo ${MAVEN_DOWNLOAD_LINK} && \
     wget ${MAVEN_DOWNLOAD_LINK} && \
+	# Display tar file size
+	wc ${MAVEN_FOLDER}-bin.tar.gz && \
     tar -xzf ${MAVEN_FOLDER}-bin.tar.gz && \
     mv /opt/install/${MAVEN_FOLDER} /opt/maven && \
     rm -rf /opt/install && \
+	# Remove redundant folder and files
     rm -f /opt/maven/bin/mvn.cmd && \
     rm -f /opt/maven/bin/mvnDebug.cmd
 

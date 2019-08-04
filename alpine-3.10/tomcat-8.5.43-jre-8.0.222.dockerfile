@@ -12,19 +12,33 @@ MAINTAINER devstudy.net
 
 ARG TOMCAT8_VERSION
 ARG TOMCAT8_FOLDER=apache-tomcat-${TOMCAT8_VERSION}
-ARG TOMCAT8_DOWNLOAD_LINK=http://apache.volia.net/tomcat/tomcat-8/v${TOMCAT8_VERSION}/bin/${TOMCAT8_FOLDER}.tar.gz
+ARG TOMCAT8_DOWNLOAD_LINK=https://www-eu.apache.org/dist/tomcat/tomcat-8/v${TOMCAT8_VERSION}/bin/${TOMCAT8_FOLDER}.tar.gz
 
 RUN mkdir /opt/install && \
     cd /opt/install && \
+	# Display download link
+	echo ${TOMCAT8_DOWNLOAD_LINK} && \
     wget ${TOMCAT8_DOWNLOAD_LINK} && \
+	# Display tar file size
+	wc ${TOMCAT8_FOLDER}.tar.gz && \
     tar -xzf ${TOMCAT8_FOLDER}.tar.gz && \
     mv /opt/install/${TOMCAT8_FOLDER} /opt/tomcat && \
+	# Remove redundant folders and files
     rm -rf /opt/install && \
     rm -rf /opt/tomcat/webapps/docs && \
     rm -rf /opt/tomcat/webapps/examples && \
     rm -rf /opt/tomcat/webapps/host-manager && \
     rm -rf /opt/tomcat/webapps/manager && \
-    busybox find /opt/tomcat/bin -type f -name "*.bat" -delete
+	rm -rf /opt/tomcat/logs && \
+    busybox find /opt/tomcat/bin -type f -name "*.bat" -delete && \
+	# Redirect tomcat logs to /var/log
+	rm -rf /var/log && \
+	ln -s /opt/tomcat/logs /var && \
+	mv /var/logs /var/log 
+
+# Customize tomcat server
+ADD ./tomcat-${TOMCAT8_VERSION}-conf/server.xml 			/opt/tomcat/conf
+ADD ./tomcat-${TOMCAT8_VERSION}-conf/logging.properties 	/opt/tomcat/conf
 
 ENV CATALINA_HOME /opt/tomcat
 ENV PATH $CATALINA_HOME/bin:$PATH
